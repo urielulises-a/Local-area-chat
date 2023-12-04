@@ -41,5 +41,5 @@ Este proyecto implementa un simple sistema de chat entre un servidor y múltiple
       
 Se abrirá la interfaz gráfica del cliente. Ingresa tu nombre de usuario, escribe mensajes y presiona "Send" para enviarlos al servidor y a otros clientes conectados.
 
-##Contribuciones
+## Contribuciones
 Las contribuciones son bienvenidas! Si tienes ideas para mejorar este proyecto, por favor, abre un problema o envía una solicitud de extracción.

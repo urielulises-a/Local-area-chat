@@ -1,24 +1,73 @@
-import tkinter as tk
-from tkinter import scrolledtext
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QTextEdit, QLineEdit, QSizePolicy
+from PyQt5.QtCore import Qt, QSize, QPropertyAnimation
 import socket
 import threading
+import sys
 
-class ChatClient:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("Chat Client")
+class ChatClient(QWidget):
+    def __init__(self):
+        super().__init__()
 
-        # Área de texto para mostrar el chat
-        self.chat_display = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=40, height=10)
-        self.chat_display.pack(padx=10, pady=10)
+        # Set window properties
+        self.setWindowTitle("Chat Client")
+        self.setGeometry(100, 100, 600, 400)
 
-        # Entrada de texto para escribir mensajes
-        self.message_entry = tk.Entry(master, width=30)
-        self.message_entry.pack(padx=10, pady=10)
+        # Create layout
+        self.layout = QVBoxLayout(self)
 
-        # Botón para enviar mensajes
-        self.send_button = tk.Button(master, text="Enviar", command=self.send_message)
-        self.send_button.pack(pady=10)
+        # Create chat display
+        self.chat_display = QTextEdit(self)
+        self.chat_display.setReadOnly(True)
+        self.chat_display.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.chat_display.setStyleSheet("""
+            QTextEdit {
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 10px;
+                font-size: 12pt;
+                margin-bottom: 10px;
+            }
+        """)
+        self.layout.addWidget(self.chat_display)
+
+        # Create message entry
+        self.message_entry = QLineEdit(self)
+        self.message_entry.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.message_entry.setStyleSheet("""
+            QLineEdit {
+                background-color: #ffffff;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 12pt;
+                margin-bottom: 10px;
+            }
+        """)
+        self.layout.addWidget(self.message_entry)
+
+        # Create send button
+        self.send_button = QPushButton("Send", self)
+        self.send_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.send_button.setStyleSheet("""
+            QPushButton {
+                background-color: #007BFF;
+                color: white;
+                border-radius: 5px;
+                padding: 8px 16px;
+                font-size: 12pt;
+            }
+            QPushButton:hover {
+                background-color: #0056b3;
+            }
+            QPushButton:pressed {
+                background-color: #004085;
+            }
+        """)
+        self.layout.addWidget(self.send_button)
+
+        # Connect send button to send_message function
+        self.send_button.clicked.connect(self.send_message)
 
         # Configuración del cliente
         self.server_address = ('127.0.0.1', 5555)
@@ -30,22 +79,32 @@ class ChatClient:
         receive_thread.start()
 
     def send_message(self):
-        message = self.message_entry.get()
+        message = self.message_entry.text()
         if message:
             self.client_socket.send(message.encode('utf-8'))
-            self.message_entry.delete(0, tk.END)
+            self.message_entry.clear()
+            self.animate_message_sent(message)
 
-    def receive_messages(self): 
+    def animate_message_sent(self, message):
+        animation = QPropertyAnimation(self.chat_display.viewport(), b"geometry")
+        animation.setDuration(300)
+        animation.setStartValue(self.chat_display.viewport().geometry())
+        animation.setEndValue(self.chat_display.viewport().geometry().translated(0, 30))
+        animation.start()
+        self.chat_display.append(f"<b>You:</b> {message}")
+
+    def receive_messages(self):
         while True:
             try:
                 message = self.client_socket.recv(1024).decode('utf-8')
-                self.chat_display.insert(tk.END, f"{message}\n")
+                self.chat_display.append(message)
             except ConnectionAbortedError:
                 break
 
-# Crear la aplicación
-root = tk.Tk()
-app = ChatClient(root)
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
 
-# Ejecutar la aplicación
-root.mainloop()
+    chat_client = ChatClient()
+    chat_client.show()
+
+    sys.exit(app.exec_())

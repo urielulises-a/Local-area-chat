@@ -30,7 +30,20 @@ class ChatClient(QWidget):
             }
         """)
         self.layout.addWidget(self.chat_display)
-
+# Create username entry
+        self.username_entry = QLineEdit(self)
+        self.username_entry.setPlaceholderText("Enter your name")
+        self.layout.addWidget(self.username_entry)
+        self.username_entry.setStyleSheet("""
+            QLineEdit {
+                background-color: #ffffff;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 12pt;
+                margin-bottom: 10px;
+            }
+        """)
         # Create message entry
         self.message_entry = QLineEdit(self)
         self.message_entry.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -45,6 +58,8 @@ class ChatClient(QWidget):
             }
         """)
         self.layout.addWidget(self.message_entry)
+        self.message_entry.returnPressed.connect(self.send_message)
+        
 
         # Create send button
         self.send_button = QPushButton("Send", self)
@@ -79,12 +94,15 @@ class ChatClient(QWidget):
         receive_thread.start()
 
     def send_message(self):
+        username = self.username_entry.text()
         message = self.message_entry.text()
-        if message:
-            self.client_socket.send(message.encode('utf-8'))
+        if username and message:
+            full_message = f"{username}: {message}"
+            self.client_socket.send(full_message.encode('utf-8'))
+            self.chat_display.append(f"<b>{username}:</b> {message}")
             self.message_entry.clear()
-            self.animate_message_sent(message)
-
+        else:
+            self.shake_animation.start()
     def animate_message_sent(self, message):
         animation = QPropertyAnimation(self.chat_display.viewport(), b"geometry")
         animation.setDuration(300)

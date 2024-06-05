@@ -1,45 +1,42 @@
-# Proyecto de Chat con Servidor y Cliente usando PyQt5 y Socket
+# Chat Project with Server and Client using PyQt5 and Socket
 
-Este proyecto implementa un simple sistema de chat entre un servidor y múltiples clientes utilizando sockets y la biblioteca PyQt5 para la interfaz gráfica del cliente.
+This project implements a simple chat system between a server and multiple clients using sockets and the PyQt5 library for the client's graphical interface.
 
-## Características
+## Features
 
-- Comunicación en tiempo real entre clientes y servidor.
-- Interfaz gráfica intuitiva para el cliente con opciones de ingreso de nombre de usuario y mensajes.
-- Manejo de conexiones concurrentes mediante hilos en el servidor.
+- Real-time communication between clients and server.
+- Intuitive graphical interface for the client with options for entering a username and messages.
+- Concurrent connection handling via threads on the server.
 
-## Requisitos
+## Requirements
 
 - Python 3.x
 - PyQt5
 
-## Estructura del Proyecto
+## Project Structure
 
-- **servidor.py**: Código del servidor para gestionar las conexiones de los clientes y reenviar mensajes.
-- **cliente.py**: Implementación del cliente de chat con interfaz gráfica utilizando PyQt5.
+- **servidor.py**: Server code to manage client connections and forward messages.
+- **cliente.py**: Chat client implementation with a graphical interface using PyQt5.
 
-## Instalación
+## Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 
    ```bash
-   git clone https://github.com/tu_usuario/tu_proyecto.git
+   git clone https://github.com/your_username/your_project.git
 
-2. Instala dependencias
+2. Install dependencies
    ```bash
    pip install PyQt5
 
-## Uso
+## Usage
 
-1. Ejectuar servidor:
+1. Start server:
    ```bash
    python servidor.py
    
-2. Ejecutar cliente:
+2. Execute client:
       ```bash
    python cliente.py
       
-Se abrirá la interfaz gráfica del cliente. Ingresa tu nombre de usuario, escribe mensajes y presiona "Send" para enviarlos al servidor y a otros clientes conectados.
-
-## Contribuciones
-Las contribuciones son bienvenidas! Si tienes ideas para mejorar este proyecto, por favor, abre un problema o envía una solicitud de extracción.
+The client's graphical interface will open. Enter your username, type messages, and press "Send" to send them to the server and other connected clients.
